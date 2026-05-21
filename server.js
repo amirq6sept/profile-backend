@@ -8,12 +8,29 @@ const app = express();
 app.use(cors()); 
 app.use(express.json()); 
 
-// 1. Database Connection
-const sequelize = new Sequelize({
-  dialect: "sqlite",
-  storage: "./database.sqlite",
-  logging: false
-});
+// --- THE UPGRADE: Dynamic Cloud Database ---
+let sequelize;
+
+if (process.env.DATABASE_URL) {
+  // 1. Production (Cloud): Connect to Render's permanent PostgreSQL database
+  sequelize = new Sequelize(process.env.DATABASE_URL, {
+    dialect: "postgres",
+    logging: false,
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      }
+    }
+  });
+} else {
+  // 2. Local (Laptop): Keep using SQLite for fast local testing!
+  sequelize = new Sequelize({
+    dialect: "sqlite",
+    storage: "./database.sqlite",
+    logging: false
+  });
+}
 
 // 2. THE MISSING PIECE: Defining the User Table!
 const User = sequelize.define("User", {
