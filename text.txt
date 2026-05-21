@@ -1,0 +1,202 @@
+// 1. Import the Express tool we just installed
+const express = require("express");
+
+const cors = require("cors"); // 1. Import the new CORS tool
+
+// 2. Create our actual server app (The Kitchen)
+const app = express();
+
+// 2. Tell the server to use CORS (Allow React to talk to us!)
+app.use(cors());
+
+// NEW LINE: The Translator! This tells the server how to read JSON data.
+app.use(express.json());
+
+// 3. Hire the Waiter (Create an API Endpoint)
+app.get("/", function(request, response) {
+  // When someone visits the home page ("/"), send this text back!
+  response.json("Hello from the Backend! The Kitchen is open.");
+});
+
+// Our new POST route to receive data!
+app.post("/api/register", function(request, response) {
+  
+  // The data the user sends us lives inside 'request.body'
+  const incomingData = request.body;
+  
+  // Let's print it to the server console to prove we got it
+  console.log("Look what the React brought to the Kitchen!");
+  console.log(incomingData);
+
+  // Send a success message back to the customer
+  response.json({ 
+    status: "Success",
+    message: "Backend received your registration data!" 
+  });
+});
+
+// 4. Turn on the server and tell it to listen on port 3000
+app.listen(3000, function() {
+  console.log("Server is running on http://localhost:3000");
+});
+
+
+
+
+const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose"); // 1. Import Mongoose
+
+const app = express();
+app.use(cors()); 
+app.use(express.json()); 
+
+// 2. Remove the old fake database array completely!
+// const usersDatabase = [];  <-- DELETE THIS LINE
+
+// 3. Connect to your real MongoDB Atlas database
+// Replace the string below with YOUR exact connection string
+const DB_CONNECTION_STRING = "mongodb+srv://admin:admin123@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority";
+
+mongoose.connect(DB_CONNECTION_STRING)
+  .then(function() {
+    console.log("SUCCESS: Connected to the MongoDB Cloud Database!");
+  })
+  .catch(function(error) {
+    console.log("ERROR: Could not connect to MongoDB.", error);
+  });
+
+// ... keep your app.get and app.post routes down here! ...
+
+
+
+
+
+
+
+
+mongoose.connect(DB_CONNECTION_STRING, {
+  serverSelectionTimeoutMS: 5000, // Optional: makes it fail faster if it hangs
+  family: 4 // THE FIX: Forces IPv4, which bypasses the Windows DNS glitch!
+})
+  .then(function() {
+    console.log("SUCCESS: Connected to the MongoDB Cloud Database!");
+  })
+  .catch(function(error) {
+    console.log("ERROR: Could not connect to MongoDB.", error);
+  });
+
+
+
+
+
+
+
+REPLACE SERVER.JSON
+
+// 1. Import the Express tool we just installed
+const express = require("express");
+
+// 1. Import the new CORS tool
+const cors = require("cors");
+
+const { Sequelize, DataTypes } = require("sequelize"); // 1. Import our SQL tools
+
+
+// 1. Import Mongoose
+const mongoose = require("mongoose");
+
+// 2. Create our actual server app (The Kitchen)
+const app = express();
+
+// 2. Tell the server to use CORS (Allow React to talk to us!)
+app.use(cors()); 
+
+// NEW LINE: The Translator! This tells the server how to read JSON data.
+app.use(express.json()); 
+
+// 1. Our Fake Database (Filing Cabinet)
+// const usersDatabase = [];  <-- DELETE THIS LINE
+
+// 3. Connect to your real MongoDB Atlas database
+// Replace the string below with YOUR exact connection string
+
+// Add "ProfileApp" right before the question mark
+const DB_CONNECTION_STRING = "mongodb+srv://admin:admin123@cluster0.dmubjer.mongodb.net/ProfileApp?retryWrites=true&w=majority";
+
+mongoose.connect(DB_CONNECTION_STRING, {
+  serverSelectionTimeoutMS: 5000, // Optional: makes it fail faster if it hangs
+  family: 4 // THE FIX: Forces IPv4, which bypasses the Windows DNS glitch!
+})
+  .then(function() {
+    console.log("SUCCESS: Connected to the MongoDB Cloud Database!");
+  })
+  .catch(function(error) {
+    console.log("ERROR: Could not connect to MongoDB.", error);
+  });
+
+// ... keep your app.get and app.post routes down here! ...
+
+
+
+// 3. Hire the Waiter (Create an API Endpoint)
+//app.get("/", function(request, response) {
+  
+  // When someone visits the home page ("/"), send this text back!
+  //response.json({ message: "Hello from the Backend! The Kitchen is open." });
+//});
+
+
+
+// Our new POST route to receive data!
+app.post("/api/register", function(request, response) {
+  
+  // The data the user sends us lives inside 'request.body'
+  const incomingData = request.body;
+  
+  // 2. Put the new user's order card into the Filing Cabinet!
+  usersDatabase.push(incomingData);
+
+  // Let's print it to the server console to prove we got it
+  console.log("Current Database:", usersDatabase);
+
+  // Send a success message back to the customer  
+  response.json({ 
+    status: "Success",
+    message: "User saved to the backend database!" 
+  });
+});
+
+
+// 3. Our new Login Endpoint
+app.post("/api/login", function(request, response) {
+  const loginAttempt = request.body; // Contains the email and password they typed
+  
+  // 4. Search the Filing Cabinet
+  // We look for a user whose email AND password match the login attempt
+  const foundUser = usersDatabase.find(function(user) {
+    return user.emailAddress === loginAttempt.email && user.userPassword === loginAttempt.password;
+  });
+
+  // 5. Did we find them?
+  if (foundUser) {
+    // Yes! Send success and their name back to React
+    response.json({
+      status: "Success",
+      message: "Welcome back!",
+      name: foundUser.fullName
+    });
+  } else {
+    // No! Send an error
+    response.status(401).json({
+      status: "Error",
+      message: "Invalid email or password."
+    });
+  }
+});
+
+
+// 4. Turn on the server and tell it to listen on port 3000
+app.listen(3000, function() {
+  console.log("Server is running on http://localhost:3000");
+});
